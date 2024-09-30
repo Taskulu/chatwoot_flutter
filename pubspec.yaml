@@ -1,0 +1,19 @@
+name: chatwoot
+description: "A flutter package for integrating Chatwoot customer management platform"
+version: 0.0.1
+platforms:
+  web:
+
+environment:
+  sdk: '>=3.4.4 <4.0.0'
+  flutter: '>=3.3.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  web: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
