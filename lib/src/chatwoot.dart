@@ -16,6 +16,7 @@ abstract class ChatwootBase {
   Future<void> removeCustomAttribute(String attribute);
   Future<void> setConversationCustomAttributes(Map<String, dynamic> attributes);
   Future<void> removeConversationCustomAttribute(String attribute);
+  Future<void> toggle();
   Future<void> reset();
 }
 
@@ -73,6 +74,11 @@ class Chatwoot implements ChatwootBase {
 
   @override
   Future<void> reset() {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> toggle() {
     throw UnimplementedError();
   }
 }

@@ -1,3 +1,7 @@
+## 0.0.3
+
+* [Web] Add toggle feature
+
 ## 0.0.2
 
 * [Web] Add position update feature

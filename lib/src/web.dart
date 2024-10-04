@@ -106,6 +106,9 @@ class Chatwoot implements ChatwootBase {
       chatwoot?.deleteConversationCustomAttribute(attribute);
 
   @override
+  Future<void> toggle() async => chatwoot?.toggle();
+
+  @override
   Future<void> reset() async => chatwoot?.reset();
 }
 
@@ -152,6 +155,9 @@ extension on JSChatwoot {
 
   @JS()
   external void deleteCustomAttribute(String attribute);
+
+  @JS()
+  external void toggle();
 
   @JS()
   external void reset();
