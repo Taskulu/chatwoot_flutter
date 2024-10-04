@@ -2,7 +2,7 @@ import 'models.dart';
 
 abstract class ChatwootBase {
   Future<void> init({
-  required String baseUrl,
+    required String baseUrl,
     required String token,
     ChatwootUser? user,
     ChatwootSettings? settings,

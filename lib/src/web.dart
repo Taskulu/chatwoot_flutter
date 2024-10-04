@@ -43,8 +43,39 @@ class Chatwoot implements ChatwootBase {
   Future<void> setSettings(ChatwootSettings settings) async {
     chatwootSettings = {
       if (settings.locale != null) 'locale': settings.locale,
+      if (settings.position != null) 'position': settings.position,
     }.jsify() as JSObject?;
-    chatwoot?.setLocale(settings.locale);
+
+    if (settings.locale != null) {
+      chatwoot?.setLocale(settings.locale);
+    }
+
+    if (settings.position != null) {
+      const chatwootElementsQuery = "[class^=\"woot-\"]";
+      final chatwootCurrentElementsClass =
+          "woot-elements--${chatwoot?.position}";
+
+      void updateElementsPosition(NodeList elements) {
+        for (int i = 0; i < elements.length; i++) {
+          final node = elements.item(i);
+          if (node case final Element element) {
+            if (element.classList.contains(chatwootCurrentElementsClass)) {
+              element.classList.remove(chatwootCurrentElementsClass);
+              element.classList.add("woot-elements--${settings.position}");
+            }
+            final subElements = element.querySelectorAll(chatwootElementsQuery);
+            if (subElements.length > 0) {
+              updateElementsPosition(subElements);
+            }
+          }
+        }
+      }
+
+      final chatwootElements =
+          window.document.querySelectorAll(chatwootElementsQuery);
+      updateElementsPosition(chatwootElements);
+      chatwoot?.position = settings.position!;
+    }
   }
 
   @override
@@ -95,6 +126,9 @@ external JSChatwoot? chatwoot;
 abstract class JSChatwoot {}
 
 extension on JSChatwoot {
+  @JS()
+  external String position;
+
   @JS()
   external void setLocale(String? value);
 
