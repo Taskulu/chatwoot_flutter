@@ -4,6 +4,7 @@ class ChatwootUser {
   final String? name;
   final String? avatarUrl;
   final String? phoneNumber;
+  final String? identifierHash;
 
   const ChatwootUser({
     required this.identifier,
@@ -11,12 +12,14 @@ class ChatwootUser {
     this.name,
     this.avatarUrl,
     this.phoneNumber,
+    this.identifierHash,
   });
 }
 
 class ChatwootSettings {
   final String? locale;
   final String? position;
+  final bool? hideMessageBubble;
 
-  const ChatwootSettings({this.locale, this.position});
+  const ChatwootSettings({this.hideMessageBubble, this.locale, this.position});
 }

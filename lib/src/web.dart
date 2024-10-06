@@ -34,17 +34,12 @@ class Chatwoot implements ChatwootBase {
   }
 
   @override
-  Future<void> setUser(ChatwootUser user) async {
-    chatwoot?.setUser(
-        user.identifier, {'email': user.email}.jsify() as JSObject?);
-  }
+  Future<void> setUser(ChatwootUser user) async =>
+      chatwoot?.setUser(user.identifier, user.toJSObject);
 
   @override
   Future<void> setSettings(ChatwootSettings settings) async {
-    chatwootSettings = {
-      if (settings.locale != null) 'locale': settings.locale,
-      if (settings.position != null) 'position': settings.position,
-    }.jsify() as JSObject?;
+    chatwootSettings = settings.toJSObject;
 
     if (settings.locale != null) {
       chatwoot?.setLocale(settings.locale);
@@ -79,14 +74,10 @@ class Chatwoot implements ChatwootBase {
   }
 
   @override
-  Future<void> setLabel(String label) async {
-    chatwoot?.setLabel(label);
-  }
+  Future<void> setLabel(String label) async => chatwoot?.setLabel(label);
 
   @override
-  Future<void> removeLabel(String label) async {
-    chatwoot?.removeLabel(label);
-  }
+  Future<void> removeLabel(String label) async => chatwoot?.removeLabel(label);
 
   @override
   Future<void> removeCustomAttribute(String attribute) async =>
@@ -161,4 +152,22 @@ extension on JSChatwoot {
 
   @JS()
   external void reset();
+}
+
+extension on ChatwootUser {
+  JSObject? get toJSObject => {
+        'email': email,
+        'name': name,
+        'avatar_url': avatarUrl,
+        'phone_number': phoneNumber,
+        'identifier_hash': identifierHash,
+      }.jsify() as JSObject?;
+}
+
+extension on ChatwootSettings {
+  JSObject? get toJSObject => {
+        if (locale != null) 'locale': locale,
+        if (position != null) 'position': position,
+        if (hideMessageBubble != null) 'hideMessageBubble': hideMessageBubble,
+      }.jsify() as JSObject?;
 }

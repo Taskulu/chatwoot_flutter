@@ -1,10 +1,15 @@
+## 0.0.4
+
+* Add identifierHash to ChatwootUser for [identity validation using HMAC](https://www.chatwoot.com/hc/user-guide/articles/1677587234-how-to-send-additional-user-information-to-chatwoot-using-sdk#identity-validation-using-hmac)
+* Add hideMessageBubble to ChatwootSettings
+
 ## 0.0.3
 
-* [Web] Add toggle feature
+* Add toggle feature
 
 ## 0.0.2
 
-* [Web] Add position update feature
+* Add position update feature
 
 ## 0.0.1
 
