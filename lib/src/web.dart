@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:js_interop';
 
+import 'package:flutter/foundation.dart';
 import 'package:web/web.dart';
 import 'package:chatwoot/src/chatwoot.dart';
 
 import 'models.dart';
 
 class Chatwoot implements ChatwootBase {
-  const Chatwoot();
+  final _eventsController = StreamController<ChatwootEvent>.broadcast();
+
+  Chatwoot();
 
   @override
   Future<void> init({
@@ -22,15 +25,31 @@ class Chatwoot implements ChatwootBase {
     }
     final runFunction = chatwootSDKRun as _DartFunctionChatwootSDKRun?;
     runFunction?.call(websiteToken: token, baseUrl: baseUrl);
+    if (chatwoot == null) {
+      _registerEventCallback('chatwoot:ready', () {
+        _eventsController.add(ChatwootEvent.ready);
+        completer.complete();
+      });
+      await completer.future;
+    }
+    _registerEventCallback('chatwoot:on-message',
+        () => _eventsController.add(ChatwootEvent.onMessage));
+    _registerEventCallback('chatwoot:on-start-conversation',
+        () => _eventsController.add(ChatwootEvent.onStartConversation));
+    _registerEventCallback(
+        'chatwoot:error', () => _eventsController.add(ChatwootEvent.error));
+    if (user != null) {
+      await setUser(user);
+    }
+  }
+
+  void _registerEventCallback(String event, VoidCallback callback) {
     window.addEventListener(
-      'chatwoot:ready',
-      (Event event) {
-        Future.wait([
-          if (user != null) setUser(user),
-        ]).then(completer.complete);
+      event,
+      (Event _) {
+        callback();
       }.toJS,
     );
-    return completer.future;
   }
 
   @override
@@ -101,6 +120,12 @@ class Chatwoot implements ChatwootBase {
 
   @override
   Future<void> reset() async => chatwoot?.reset();
+
+  @override
+  Stream<ChatwootEvent> get eventsStream => _eventsController.stream;
+
+  @override
+  bool get isOpen => chatwoot?.isOpen ?? false;
 }
 
 typedef _DartFunctionChatwootSDKRun = void Function(
@@ -152,6 +177,9 @@ extension on JSChatwoot {
 
   @JS()
   external void reset();
+
+  @JS()
+  external bool get isOpen;
 }
 
 extension on ChatwootUser {
@@ -168,6 +196,9 @@ extension on ChatwootSettings {
   JSObject? get toJSObject => {
         if (locale != null) 'locale': locale,
         if (position != null) 'position': position,
+        if (baseDomain != null) 'baseDomain': baseDomain,
         if (hideMessageBubble != null) 'hideMessageBubble': hideMessageBubble,
+        if (showUnreadMessagesDialog != null)
+          'showUnreadMessagesDialog': showUnreadMessagesDialog,
       }.jsify() as JSObject?;
 }

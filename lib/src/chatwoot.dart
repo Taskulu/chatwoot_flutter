@@ -7,7 +7,6 @@ abstract class ChatwootBase {
     ChatwootUser? user,
     ChatwootSettings? settings,
   });
-
   Future<void> setUser(ChatwootUser user);
   Future<void> setSettings(ChatwootSettings settings);
   Future<void> setLabel(String label);
@@ -18,6 +17,8 @@ abstract class ChatwootBase {
   Future<void> removeConversationCustomAttribute(String attribute);
   Future<void> toggle();
   Future<void> reset();
+  Stream<ChatwootEvent> get eventsStream;
+  bool get isOpen;
 }
 
 class Chatwoot implements ChatwootBase {
@@ -81,4 +82,10 @@ class Chatwoot implements ChatwootBase {
   Future<void> toggle() {
     throw UnimplementedError();
   }
+
+  @override
+  Stream<ChatwootEvent> get eventsStream => throw UnimplementedError();
+
+  @override
+  bool get isOpen => throw UnimplementedError();
 }

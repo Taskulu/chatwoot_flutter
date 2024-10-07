@@ -1,3 +1,10 @@
+## 0.0.5
+
+* Add isOpen getter
+* Add eventsStream for Chatwoot SDK events
+* Add baseDomain and showUnreadMessagesDialog to ChatwootSettings
+* Fix init when Chatwoot SDK is completely loaded before on Web
+
 ## 0.0.4
 
 * Add identifierHash to ChatwootUser for [identity validation using HMAC](https://www.chatwoot.com/hc/user-guide/articles/1677587234-how-to-send-additional-user-information-to-chatwoot-using-sdk#identity-validation-using-hmac)

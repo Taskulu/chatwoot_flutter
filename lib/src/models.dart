@@ -19,7 +19,17 @@ class ChatwootUser {
 class ChatwootSettings {
   final String? locale;
   final String? position;
+  final String? baseDomain;
   final bool? hideMessageBubble;
+  final bool? showUnreadMessagesDialog;
 
-  const ChatwootSettings({this.hideMessageBubble, this.locale, this.position});
+  const ChatwootSettings({
+    this.locale,
+    this.position,
+    this.baseDomain,
+    this.hideMessageBubble,
+    this.showUnreadMessagesDialog,
+  });
 }
+
+enum ChatwootEvent { ready, onMessage, onStartConversation, error }
