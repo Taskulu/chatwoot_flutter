@@ -23,9 +23,8 @@ class Chatwoot implements ChatwootBase {
     if (settings != null) {
       await setSettings(settings);
     }
-    final runFunction = chatwootSDKRun as _DartFunctionChatwootSDKRun?;
-    runFunction?.call(websiteToken: token, baseUrl: baseUrl);
-    if (chatwoot == null) {
+    window.chatwootSDK.run({'websiteToken': token, 'baseUrl': baseUrl}.toJS);
+    if (window.$chatwoot == null) {
       _registerEventCallback('chatwoot:ready', () {
         _eventsController.add(ChatwootEvent.ready);
         completer.complete();
@@ -54,20 +53,20 @@ class Chatwoot implements ChatwootBase {
 
   @override
   Future<void> setUser(ChatwootUser user) async =>
-      chatwoot?.setUser(user.identifier, user.toJSObject);
+      window.$chatwoot?.setUser(user.identifier, user.toJSObject);
 
   @override
   Future<void> setSettings(ChatwootSettings settings) async {
-    chatwootSettings = settings.toJSObject;
+    window.chatwootSettings = settings.toJSObject;
 
     if (settings.locale != null) {
-      chatwoot?.setLocale(settings.locale);
+      window.$chatwoot?.setLocale(settings.locale);
     }
 
     if (settings.position != null) {
       const chatwootElementsQuery = "[class^=\"woot-\"]";
       final chatwootCurrentElementsClass =
-          "woot-elements--${chatwoot?.position}";
+          "woot-elements--${window.$chatwoot?.position}";
 
       void updateElementsPosition(NodeList elements) {
         for (int i = 0; i < elements.length; i++) {
@@ -88,117 +87,109 @@ class Chatwoot implements ChatwootBase {
       final chatwootElements =
           window.document.querySelectorAll(chatwootElementsQuery);
       updateElementsPosition(chatwootElements);
-      chatwoot?.position = settings.position!;
+      window.$chatwoot?.position = settings.position!;
     }
   }
 
   @override
-  Future<void> setLabel(String label) async => chatwoot?.setLabel(label);
+  Future<void> setLabel(String label) async =>
+      window.$chatwoot?.setLabel(label);
 
   @override
-  Future<void> removeLabel(String label) async => chatwoot?.removeLabel(label);
+  Future<void> removeLabel(String label) async =>
+      window.$chatwoot?.removeLabel(label);
 
   @override
   Future<void> removeCustomAttribute(String attribute) async =>
-      chatwoot?.deleteCustomAttribute(attribute);
+      window.$chatwoot?.deleteCustomAttribute(attribute);
 
   @override
   Future<void> setCustomAttributes(Map<String, dynamic> attributes) async =>
-      chatwoot?.setCustomAttributes(attributes.jsify() as JSObject);
+      window.$chatwoot?.setCustomAttributes(attributes.toJS);
 
   @override
   Future<void> setConversationCustomAttributes(
           Map<String, dynamic> attributes) async =>
-      chatwoot?.setConversationCustomAttributes(attributes.jsify() as JSObject);
+      window.$chatwoot?.setConversationCustomAttributes(attributes.toJS);
 
   @override
   Future<void> removeConversationCustomAttribute(String attribute) async =>
-      chatwoot?.deleteConversationCustomAttribute(attribute);
+      window.$chatwoot?.deleteConversationCustomAttribute(attribute);
 
   @override
-  Future<void> toggle() async => chatwoot?.toggle();
+  Future<void> toggle() async => window.$chatwoot?.toggle();
 
   @override
-  Future<void> reset() async => chatwoot?.reset();
+  Future<void> reset() async => window.$chatwoot?.reset();
 
   @override
   Stream<ChatwootEvent> get eventsStream => _eventsController.stream;
 
   @override
-  bool get isOpen => chatwoot?.isOpen ?? false;
+  bool get isOpen => window.$chatwoot?.isOpen ?? false;
 }
 
-typedef _DartFunctionChatwootSDKRun = void Function(
-    {String websiteToken, String baseUrl});
+extension on Window {
+  external JSChatwootSDK get chatwootSDK;
 
-@JS('window.chatwootSDK.run')
-external JSFunction? chatwootSDKRun;
+  external set chatwootSettings(JSObject value);
 
-@JS('window.chatwootSettings')
-external JSObject? chatwootSettings;
+  external JSChatwoot? get $chatwoot;
+}
+
+@JS('window.chatwootSDK')
+extension type JSChatwootSDK(JSObject _) implements JSObject {
+  external void run(JSObject value);
+}
 
 @JS('window.\$chatwoot')
-external JSChatwoot? chatwoot;
-
-@JS()
-@staticInterop
-abstract class JSChatwoot {}
-
-extension on JSChatwoot {
-  @JS()
+extension type JSChatwoot(JSObject _) implements JSObject {
   external String position;
 
-  @JS()
   external void setLocale(String? value);
 
-  @JS()
   external void setLabel(String value);
 
-  @JS()
   external void removeLabel(String value);
 
-  @JS()
-  external void setUser(String identifier, JSObject? data);
+  external void setUser(String identifier, JSObject data);
 
-  @JS()
   external void setConversationCustomAttributes(JSObject attributes);
 
-  @JS()
   external void deleteConversationCustomAttribute(String attribute);
 
-  @JS()
   external void setCustomAttributes(JSObject attributes);
 
-  @JS()
   external void deleteCustomAttribute(String attribute);
 
-  @JS()
   external void toggle();
 
-  @JS()
   external void reset();
 
-  @JS()
   external bool get isOpen;
 }
 
 extension on ChatwootUser {
-  JSObject? get toJSObject => {
+  JSObject get toJSObject => {
         'email': email,
         'name': name,
         'avatar_url': avatarUrl,
         'phone_number': phoneNumber,
         'identifier_hash': identifierHash,
-      }.jsify() as JSObject?;
+      }.toJS;
 }
 
 extension on ChatwootSettings {
-  JSObject? get toJSObject => {
+  JSObject get toJSObject => {
         if (locale != null) 'locale': locale,
         if (position != null) 'position': position,
         if (baseDomain != null) 'baseDomain': baseDomain,
         if (hideMessageBubble != null) 'hideMessageBubble': hideMessageBubble,
         if (showUnreadMessagesDialog != null)
           'showUnreadMessagesDialog': showUnreadMessagesDialog,
-      }.jsify() as JSObject?;
+      }.toJS;
+}
+
+extension on Map {
+  JSObject get toJS => jsify() as JSObject;
 }
