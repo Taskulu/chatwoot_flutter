@@ -1,3 +1,7 @@
+## 0.0.6
+
+* Fix init issue on Web release builds
+
 ## 0.0.5
 
 * Add isOpen getter

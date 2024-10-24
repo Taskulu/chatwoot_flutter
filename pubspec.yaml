@@ -1,6 +1,6 @@
 name: chatwoot
 description: "A flutter package for integrating Chatwoot customer management platform"
-version: 0.0.5
+version: 0.0.6
 platforms:
   web:
 
