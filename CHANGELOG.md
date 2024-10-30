@@ -1,3 +1,7 @@
+## 0.0.7
+
+* Wait for chatwoot:ready event during init for Web
+
 ## 0.0.6
 
 * Fix init issue on Web release builds
