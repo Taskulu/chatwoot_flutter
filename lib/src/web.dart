@@ -24,13 +24,11 @@ class Chatwoot implements ChatwootBase {
       await setSettings(settings);
     }
     window.chatwootSDK.run({'websiteToken': token, 'baseUrl': baseUrl}.toJS);
-    if (window.$chatwoot == null) {
-      _registerEventCallback('chatwoot:ready', () {
-        _eventsController.add(ChatwootEvent.ready);
-        completer.complete();
-      });
-      await completer.future;
-    }
+    _registerEventCallback('chatwoot:ready', () {
+      _eventsController.add(ChatwootEvent.ready);
+      completer.complete();
+    });
+    await completer.future;
     _registerEventCallback('chatwoot:on-message',
         () => _eventsController.add(ChatwootEvent.onMessage));
     _registerEventCallback('chatwoot:on-start-conversation',
